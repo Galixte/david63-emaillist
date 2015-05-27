@@ -37,20 +37,25 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'ACP_USER_UTILS'			=> 'User utilities',
+	'ACP_USER_UTILS'		=> 'User utilities',
+	'ALL'					=> 'All',
 
-	'EMAIL_LIST'	=> 'Email list',
+	'EMAIL_LIST'			=> 'Email list',
 	'EMAIL_LIST_EXPLAIN'	=> 'Here is a list of member’s email addresses.',
-	'SORT_EMAIL'	=> 'Email',
-	'SORT_JABBER'	=> 'Jabber',
-	'SORT_USERNAME'	=> 'Username',
-	'FILTER_USERNAME' => 'Username',
-	'OTHER'	=> 'Other',
-	'ALL'	=> 'All',
-	'TOTAL_USERS'	=> 'Total users',
-	'FILTER_BY'	=> 'Filter by',
-	'SELECT_CHAR'	=> 'Select character',
-	'SORT_BY'	=> 'Sort by',
-	'JABBER_ADDRESS'	=> 'Jabber address',
 
+	'FILTER_BY'				=> 'Filter by',
+	'FILTER_EMAIL'			=> 'Email',
+	'FILTER_USERNAME'		=> 'Username',
+
+	'JABBER_ADDRESS'		=> 'Jabber address',
+
+	'OTHER'					=> 'Other',
+
+	'SELECT_CHAR'			=> 'Select character',
+	'SORT_BY'				=> 'Sort by',
+	'SORT_EMAIL'			=> 'Email',
+	'SORT_JABBER'			=> 'Jabber',
+	'SORT_USERNAME'			=> 'Username',
+
+	'TOTAL_USERS'			=> 'Total users',
 ));

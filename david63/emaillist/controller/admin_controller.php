@@ -71,7 +71,8 @@ class admin_controller implements admin_interface
 		// Start initial var setup
 		$action			= $this->request->variable('action', '');
 		$start			= $this->request->variable('start', 0);
-		$fc				= $this->request->variable('fc', '');
+		$fce			= $this->request->variable('fce', '');
+		$fcu			= $this->request->variable('fcu', '');
 		$sort_key		= $this->request->variable('sk', 'u');
 		$sd = $sort_dir	= $this->request->variable('sd', 'a');
 
@@ -84,16 +85,27 @@ class admin_controller implements admin_interface
 		);
 
 		$filter_by = '';
-		if ($fc == 'other')
+		if ($fcu == 'other')
 		{
 			for ($i = 97; $i < 123; $i++)
 			{
 				$filter_by .= ' AND username_clean ' . $this->db->sql_not_like_expression(utf8_clean_string(chr($i)) . $this->db->get_any_char());
 			}
 		}
-		else if ($fc)
+		else if ($fcu)
 		{
-			$filter_by .= ' AND username_clean ' . $this->db->sql_like_expression(utf8_clean_string(substr($fc, 0, 1)) . $this->db->get_any_char());
+			$filter_by .= ' AND username_clean ' . $this->db->sql_like_expression(utf8_clean_string(substr($fcu, 0, 1)) . $this->db->get_any_char());
+		}
+		if ($fce == 'other')
+		{
+			for ($i = 97; $i < 123; $i++)
+			{
+				$filter_by .= ' AND user_email ' . $this->db->sql_not_like_expression(utf8_clean_string(chr($i)) . $this->db->get_any_char());
+			}
+		}
+		else if ($fce)
+		{
+			$filter_by .= ' AND user_email ' . $this->db->sql_like_expression(utf8_clean_string(substr($fce, 0, 1)) . $this->db->get_any_char());
 		}
 
 		$order_by = ($sort_key == '') ? 'username_clean' : $order_ary[$sort_key];
@@ -154,9 +166,16 @@ class admin_controller implements admin_interface
 
 		foreach ($first_characters as $char => $desc)
 		{
-			$this->template->assign_block_vars('first_char', array(
+			$this->template->assign_block_vars('first_char_user', array(
 				'DESC'			=> $desc,
-				'U_SORT'		=> $action . '&amp;fc=' . $char,
+
+				'U_SORT'		=> $action . '&amp;fcu=' . $char,
+			));
+
+			$this->template->assign_block_vars('first_char_email', array(
+				'DESC'			=> $desc,
+
+				'U_SORT'		=> $action . '&amp;fce=' . $char,
 			));
 		}
 
@@ -164,6 +183,7 @@ class admin_controller implements admin_interface
 			'S_JAB_ENABLE'	=> $this->config['jab_enable'],
 			'S_SORT_DIR'	=> $s_sort_dir,
 			'S_SORT_KEY'	=> $s_sort_key,
+
 			'TOTAL_USERS'	=> $this->user->lang('TOTAL_USERS', (int) $user_count),
 
 			'U_ACTION'		=> $action,

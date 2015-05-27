@@ -1,7 +1,7 @@
 {
 	"name": "david63/emaillist",
 	"type": "phpbb-extension",
-	"description": "Adds an Admin option to display a list of member's email addresses'",
+	"description": "Adds an Admin option to display a list of member's email addresses.",
 	"homepage": "",
 	"version": "1.0.0-b1",
 	"time": "2015-05-26",
