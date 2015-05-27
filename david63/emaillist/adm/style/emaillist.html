@@ -1,0 +1,86 @@
+<!-- INCLUDE overall_header.html -->
+
+<a name="maincontent"></a>
+
+<h1>{L_EMAIL_LIST}</h1>
+<p>{L_EMAIL_LIST_EXPLAIN}</p>
+
+<form id="list" method="post" action="{U_ACTION}">
+
+<div class="pagination">
+	<!-- IF .pagination or TOTAL_USERS -->
+   		{TOTAL_USERS}
+		<!-- IF .pagination -->
+			&bull; <!-- INCLUDE pagination.html -->
+		<!-- ELSE -->
+			&bull; {PAGE_NUMBER}
+		<!-- ENDIF -->
+	<!-- ENDIF -->
+</div>
+
+<br />
+
+<table cellspacing="1">
+<thead>
+	<tr>
+		<th>{L_FILTER_BY}</th>
+		<th>{L_SELECT_CHAR}</th>
+	</tr>
+</thead>
+
+<tbody>
+	<tr class="row1">
+		<td><strong>{L_FILTER_USERNAME}</strong></td>
+		<td>
+			<!-- BEGIN first_char -->
+				<a href="{first_char.U_SORT}">{first_char.DESC}</a>&nbsp;
+			<!-- END first_char -->
+		</td>
+	</tr>
+</tbody>
+
+</table>
+
+<fieldset class="display-options">
+	{L_SORT_BY} {L_COLON} {S_SORT_KEY} {S_SORT_DIR}
+	<input class="button2" type="submit" value="{L_GO}" name="sort" />
+</fieldset>
+
+<table cellspacing="1">
+<thead>
+<tr>
+	<th>{L_USERNAME}</th>
+	<th>{L_EMAIL_ADDRESS}</th>
+	<!-- IF S_JAB_ENABLE -->
+		<th>{L_JABBER_ADDRESS}</th>
+	<!-- ENDIF -->
+</tr>
+</thead>
+
+<tbody>
+	<!-- BEGIN emaillist -->
+		<!-- IF emaillist.S_ROW_COUNT is even --><tr class="row1"><!-- ELSE --><tr class="row2"><!-- ENDIF -->
+			<td>{emaillist.USERNAME}</td>
+			<td>{emaillist.EMAIL}</td>
+			<!-- IF S_JAB_ENABLE -->
+				<td>{emaillist.JABBER}</td>
+			<!-- ENDIF -->
+		</tr>
+	<!-- END emaillist -->
+</tbody>
+
+</table>
+
+<br />
+
+<div class="pagination">
+	<!-- IF .pagination -->
+		&bull; <!-- INCLUDE pagination.html -->
+	<!-- ELSE -->
+		&bull; {PAGE_NUMBER}
+	<!-- ENDIF -->
+</div>
+
+</form>
+
+<!-- INCLUDE overall_footer.html -->
