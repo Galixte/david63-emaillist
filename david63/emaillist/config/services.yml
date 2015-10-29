@@ -7,4 +7,5 @@ services:
             - @request
             - @template
             - @user
+            - %core.root_path%
             - @service_container

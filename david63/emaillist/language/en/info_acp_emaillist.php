@@ -40,6 +40,8 @@ $lang = array_merge($lang, array(
 	'ACP_USER_UTILS'		=> 'User utilities',
 	'ALL'					=> 'All',
 
+	'E_CSV'					=> 'CSV email list',
+	'E_SORT'				=> 'Sort',
 	'EMAIL_LIST'			=> 'Email list',
 	'EMAIL_LIST_EXPLAIN'	=> 'Here is a list of member’s email addresses.',
 

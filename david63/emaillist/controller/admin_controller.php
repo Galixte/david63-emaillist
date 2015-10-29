@@ -31,6 +31,9 @@ class admin_controller implements admin_interface
 	/** @var \phpbb\user */
 	protected $user;
 
+	/** @var string phpBB root path */
+	protected $root_path;
+
 	/** @var ContainerInterface */
 	protected $container;
 
@@ -45,19 +48,21 @@ class admin_controller implements admin_interface
 	* @param \phpbb\request\request				$request	Request object
 	* @param \phpbb\template\template			$template	Template object
 	* @param \phpbb\user						$user		User object
+	* @param string 							$phpbb_root_path
 	* @param ContainerInterface					$container	Service container interface
 	*
 	* @return \david63\emaillist\controller\admin_controller
 	* @access public
 	*/
-	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, ContainerInterface $container)
+	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, $phpbb_root_path, ContainerInterface $container)
 	{
-		$this->config		= $config;
-		$this->db  			= $db;
-		$this->request		= $request;
-		$this->template		= $template;
-		$this->user			= $user;
-		$this->container	= $container;
+		$this->config			= $config;
+		$this->db  				= $db;
+		$this->request			= $request;
+		$this->template			= $template;
+		$this->user				= $user;
+		$this->phpbb_root_path	= $phpbb_root_path;
+		$this->container		= $container;
 	}
 
 	/**
@@ -70,11 +75,12 @@ class admin_controller implements admin_interface
 	{
 		// Start initial var setup
 		$action			= $this->request->variable('action', '');
-		$start			= $this->request->variable('start', 0);
+		$csv			= $this->request->variable('csv', false);
 		$fce			= $this->request->variable('fce', '');
 		$fcu			= $this->request->variable('fcu', '');
 		$sort_key		= $this->request->variable('sk', 'u');
 		$sd = $sort_dir	= $this->request->variable('sd', 'a');
+		$start			= $this->request->variable('start', 0);
 
 		$sort_dir		= ($sort_dir == 'd') ? ' DESC' : ' ASC';
 
@@ -116,25 +122,55 @@ class admin_controller implements admin_interface
 				$filter_by
 			ORDER BY $order_by";
 
-		$result = $this->db->sql_query_limit($sql, $this->config['topics_per_page'], $start);
+		$result = ($csv == true) ? $this->db->sql_query($sql) : $this->db->sql_query_limit($sql, $this->config['topics_per_page'], $start);
 
-		while ($row = $this->db->sql_fetchrow($result))
+		if ($csv)
 		{
-			$this->template->assign_block_vars('emaillist', array(
-				'EMAIL'		=> $row['user_email'],
-				'JABBER'	=> ($this->config['jab_enable']) ? $row['user_jabber'] : '',
-				'USERNAME'	=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
-		   	));
+			$csv_data	= '';
+			$filename	= $this->phpbb_root_path . '/store/phpBB_email_' . date('Ymd') . '.csv';
+			$fp			= fopen($filename, 'w');
+
+			while ($row = $this->db->sql_fetchrow($result))
+			{
+				$csv_data .= '"' . $row['username'] . '","' . $row['user_email'] . '"' . "\r";
+			}
+
+			fwrite($fp, $csv_data);
+			fclose($fp);
+
+			// Download the file
+			header('Content-type: application/force-download');
+			header('Content-Transfer-Encoding: Binary');
+			header('Content-length: ' . filesize($filename));
+			header("Content-disposition: attachment; filename=\"" . basename($filename) . "\"");
+			readfile($filename);
+
+			// Delete the file
+			unlink($filename);
+			exit;
+		}
+		else
+		{
+			while ($row = $this->db->sql_fetchrow($result))
+			{
+				$this->template->assign_block_vars('emaillist', array(
+					'EMAIL'		=> $row['user_email'],
+					'JABBER'	=> ($this->config['jab_enable']) ? $row['user_jabber'] : '',
+					'USERNAME'	=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
+		   		));
+			}
 		}
 		$this->db->sql_freeresult($result);
 
-		$sort_by_text	= array('u' => $this->user->lang('SORT_USERNAME'), 'e' => $this->user->lang('SORT_EMAIL'));
+		$sort_by_text = array('u' => $this->user->lang('SORT_USERNAME'), 'e' => $this->user->lang('SORT_EMAIL'));
+
 		if ($this->config['jab_enable'])
 		{
 			$sort_by_text['j'] = $this->user->lang('SORT_JABBER');
 		}
-		$limit_days		= array();
-		$s_sort_key		= $s_limit_days = $s_sort_dir = $u_sort_param = '';
+
+		$limit_days = array();
+		$s_sort_key = $s_limit_days = $s_sort_dir = $u_sort_param = '';
 
 		gen_sort_selects($limit_days, $sort_by_text, $sort_days, $sort_key, $sd, $s_limit_days, $s_sort_key, $s_sort_dir, $u_sort_param);
 
@@ -158,7 +194,7 @@ class admin_controller implements admin_interface
 
 		$first_characters		= array();
 		$first_characters['']	= $this->user->lang('ALL');
-		for ($i = ord('a'); $i <= ord('z'); $i++)
+		for ($i = ord('a'); $i	<= ord('z'); $i++)
 		{
 			$first_characters[chr($i)] = chr($i - 32);
 		}
@@ -167,15 +203,13 @@ class admin_controller implements admin_interface
 		foreach ($first_characters as $char => $desc)
 		{
 			$this->template->assign_block_vars('first_char_user', array(
-				'DESC'			=> $desc,
-
-				'U_SORT'		=> $action . '&amp;fcu=' . $char,
+				'DESC'		=> $desc,
+				'U_SORT'	=> $action . '&amp;fcu=' . $char,
 			));
 
 			$this->template->assign_block_vars('first_char_email', array(
-				'DESC'			=> $desc,
-
-				'U_SORT'		=> $action . '&amp;fce=' . $char,
+				'DESC'		=> $desc,
+				'U_SORT'	=> $action . '&amp;fce=' . $char,
 			));
 		}
 
@@ -183,9 +217,7 @@ class admin_controller implements admin_interface
 			'S_JAB_ENABLE'	=> $this->config['jab_enable'],
 			'S_SORT_DIR'	=> $s_sort_dir,
 			'S_SORT_KEY'	=> $s_sort_key,
-
 			'TOTAL_USERS'	=> $this->user->lang('TOTAL_USERS', (int) $user_count),
-
 			'U_ACTION'		=> $action,
 		));
 	}
