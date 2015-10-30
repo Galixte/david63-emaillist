@@ -31,11 +31,11 @@ class admin_controller implements admin_interface
 	/** @var \phpbb\user */
 	protected $user;
 
+	/** @var \phpbb\pagination */
+	protected $pagination;
+
 	/** @var string phpBB root path */
 	protected $root_path;
-
-	/** @var ContainerInterface */
-	protected $container;
 
 	/** @var string Custom form action */
 	protected $u_action;
@@ -48,21 +48,21 @@ class admin_controller implements admin_interface
 	* @param \phpbb\request\request				$request	Request object
 	* @param \phpbb\template\template			$template	Template object
 	* @param \phpbb\user						$user		User object
+	* @param \phpbb\pagination					$pagination
 	* @param string 							$phpbb_root_path
-	* @param ContainerInterface					$container	Service container interface
 	*
 	* @return \david63\emaillist\controller\admin_controller
 	* @access public
 	*/
-	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, $phpbb_root_path, ContainerInterface $container)
+	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, \phpbb\pagination $pagination, $phpbb_root_path)
 	{
 		$this->config			= $config;
 		$this->db  				= $db;
 		$this->request			= $request;
 		$this->template			= $template;
 		$this->user				= $user;
+		$this->pagination		= $pagination;
 		$this->phpbb_root_path	= $phpbb_root_path;
-		$this->container		= $container;
 	}
 
 	/**
@@ -186,11 +186,10 @@ class admin_controller implements admin_interface
 
 		$this->db->sql_freeresult($result);
 
-		$action = "{$this->u_action}&amp;sk=$sort_key&amp;sd=$sd";
+		$action = "{$this->u_action}&amp;sk=$sort_key&amp;sd=$sd&amp;fce=$fce&amp;fcu=$fcu";
 
-		$pagination	= $this->container->get('pagination');
-		$start		= $pagination->validate_start($start, $this->config['topics_per_page'], $user_count);
-		$pagination->generate_template_pagination($action, 'pagination', 'start', $user_count, $this->config['topics_per_page'], $start);
+		$start		= $this->pagination->validate_start($start, $this->config['topics_per_page'], $user_count);
+		$this->pagination->generate_template_pagination($action, 'pagination', 'start', $user_count, $this->config['topics_per_page'], $start);
 
 		$first_characters		= array();
 		$first_characters['']	= $this->user->lang('ALL');
@@ -217,7 +216,7 @@ class admin_controller implements admin_interface
 			'S_JAB_ENABLE'	=> $this->config['jab_enable'],
 			'S_SORT_DIR'	=> $s_sort_dir,
 			'S_SORT_KEY'	=> $s_sort_key,
-			'TOTAL_USERS'	=> $this->user->lang('TOTAL_USERS', (int) $user_count),
+			'TOTAL_USERS'	=> $this->user->lang('TOTAL_EMAIL_USERS', (int) $user_count),
 			'U_ACTION'		=> $action,
 		));
 	}

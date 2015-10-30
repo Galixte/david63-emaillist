@@ -7,5 +7,5 @@ services:
             - @request
             - @template
             - @user
+            - @pagination
             - %core.root_path%
-            - @service_container
