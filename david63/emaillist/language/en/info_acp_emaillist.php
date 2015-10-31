@@ -40,6 +40,7 @@ $lang = array_merge($lang, array(
 	'ACP_USER_UTILS'		=> 'User utilities',
 	'ALL'					=> 'All',
 
+	'E_CLEAR_FILTER'		=> 'Clear filters',
 	'E_CSV'					=> 'CSV email list',
 	'E_SORT'				=> 'Sort',
 	'EMAIL_LIST'			=> 'Email list',
@@ -60,4 +61,9 @@ $lang = array_merge($lang, array(
 	'SORT_USERNAME'			=> 'Username',
 
 	'TOTAL_EMAIL_USERS'		=> 'Total users <strong>%s</strong>',
+
+	// Translators - set these to whatever is most appropriate in your language
+	// These are used to populate the filter keys
+	'START_CHARACTER'		=> 'A',
+	'END_CHARACTER'			=> 'Z',
 ));

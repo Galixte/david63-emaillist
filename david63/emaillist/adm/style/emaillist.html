@@ -33,7 +33,7 @@
 		<td><strong>{L_FILTER_USERNAME}</strong></td>
 		<td>
 			<!-- BEGIN first_char_user -->
-				<a href="{first_char_user.U_SORT}">{first_char_user.DESC}</a>&nbsp;
+				<a href="{first_char_user.U_FILTER}">{first_char_user.DESC}</a>&nbsp;
 			<!-- END first_char_user -->
 		</td>
 	</tr>
@@ -42,7 +42,7 @@
 		<td><strong>{L_FILTER_EMAIL}</strong></td>
 		<td>
 			<!-- BEGIN first_char_email -->
-				<a href="{first_char_email.U_SORT}">{first_char_email.DESC}</a>&nbsp;
+				<a href="{first_char_email.U_FILTER}">{first_char_email.DESC}</a>&nbsp;
 			<!-- END first_char_email -->
 		</td>
 	</tr>
@@ -53,6 +53,8 @@
 <fieldset class="display-options">
 	{L_SORT_BY} {L_COLON} {S_SORT_KEY} {S_SORT_DIR}
 	<input class="button2" type="submit" value="{L_E_SORT}" name="sort" />
+	&nbsp;&bull;&nbsp;
+	<input class="button2" type="submit" value="{L_E_CLEAR_FILTER}" name="clear_filters" />
 	&nbsp;&bull;&nbsp;
 	<input class="button2" type="submit" value="{L_E_CSV}" name="csv" />
 </fieldset>

@@ -75,6 +75,7 @@ class admin_controller implements admin_interface
 	{
 		// Start initial var setup
 		$action			= $this->request->variable('action', '');
+		$clear_filters	= $this->request->variable('clear_filters', '');
 		$csv			= $this->request->variable('csv', false);
 		$fce			= $this->request->variable('fce', '');
 		$fcu			= $this->request->variable('fcu', '');
@@ -82,7 +83,14 @@ class admin_controller implements admin_interface
 		$sd = $sort_dir	= $this->request->variable('sd', 'a');
 		$start			= $this->request->variable('start', 0);
 
-		$sort_dir		= ($sort_dir == 'd') ? ' DESC' : ' ASC';
+		if ($clear_filters)
+		{
+			$fce = $fcu		= '';
+			$sd = $sort_dir	= 'a';
+			$sort_key		= 'u';
+		}
+
+		$sort_dir = ($sort_dir == 'd') ? ' DESC' : ' ASC';
 
 		$order_ary = array(
 			'e'	=> 'user_email' . $sort_dir. ', user_email ASC',
@@ -93,7 +101,7 @@ class admin_controller implements admin_interface
 		$filter_by = '';
 		if ($fcu == 'other')
 		{
-			for ($i = 97; $i < 123; $i++)
+			for ($i = ord($this->user->lang('START_CHARACTER')); $i	<= ord($this->user->lang('END_CHARACTER')); $i++)
 			{
 				$filter_by .= ' AND username_clean ' . $this->db->sql_not_like_expression(utf8_clean_string(chr($i)) . $this->db->get_any_char());
 			}
@@ -104,7 +112,7 @@ class admin_controller implements admin_interface
 		}
 		if ($fce == 'other')
 		{
-			for ($i = 97; $i < 123; $i++)
+			for ($i = ord($this->user->lang('START_CHARACTER')); $i	<= ord($this->user->lang('END_CHARACTER')); $i++)
 			{
 				$filter_by .= ' AND user_email ' . $this->db->sql_not_like_expression(utf8_clean_string(chr($i)) . $this->db->get_any_char());
 			}
@@ -186,16 +194,16 @@ class admin_controller implements admin_interface
 
 		$this->db->sql_freeresult($result);
 
-		$action = "{$this->u_action}&amp;sk=$sort_key&amp;sd=$sd&amp;fce=$fce&amp;fcu=$fcu";
+		$action = "{$this->u_action}&amp;sk=$sort_key&amp;sd=$sd";
 
-		$start		= $this->pagination->validate_start($start, $this->config['topics_per_page'], $user_count);
-		$this->pagination->generate_template_pagination($action, 'pagination', 'start', $user_count, $this->config['topics_per_page'], $start);
+		$start = $this->pagination->validate_start($start, $this->config['topics_per_page'], $user_count);
+		$this->pagination->generate_template_pagination($action . "&amp;fce=$fce&amp;fcu=$fcu", 'pagination', 'start', $user_count, $this->config['topics_per_page'], $start);
 
 		$first_characters		= array();
 		$first_characters['']	= $this->user->lang('ALL');
-		for ($i = ord('a'); $i	<= ord('z'); $i++)
+		for ($i = ord($this->user->lang('START_CHARACTER')); $i	<= ord($this->user->lang('END_CHARACTER')); $i++)
 		{
-			$first_characters[chr($i)] = chr($i - 32);
+			$first_characters[chr($i)] = chr($i);
 		}
 		$first_characters['other'] = $this->user->lang('OTHER');
 
@@ -203,12 +211,12 @@ class admin_controller implements admin_interface
 		{
 			$this->template->assign_block_vars('first_char_user', array(
 				'DESC'		=> $desc,
-				'U_SORT'	=> $action . '&amp;fcu=' . $char,
+				'U_FILTER'	=> $action . '&amp;fcu=' . $char . "&amp;fce=$fce",
 			));
 
 			$this->template->assign_block_vars('first_char_email', array(
 				'DESC'		=> $desc,
-				'U_SORT'	=> $action . '&amp;fce=' . $char,
+				'U_FILTER'	=> $action . '&amp;fce=' . $char . "&amp;fcu=$fcu",
 			));
 		}
 
@@ -217,7 +225,7 @@ class admin_controller implements admin_interface
 			'S_SORT_DIR'	=> $s_sort_dir,
 			'S_SORT_KEY'	=> $s_sort_key,
 			'TOTAL_USERS'	=> $this->user->lang('TOTAL_EMAIL_USERS', (int) $user_count),
-			'U_ACTION'		=> $action,
+			'U_ACTION'		=> $action . "&amp;fce=$fce&amp;fcu=$fcu",
 		));
 	}
 
