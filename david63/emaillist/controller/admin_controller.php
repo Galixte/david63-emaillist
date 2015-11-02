@@ -11,6 +11,8 @@ namespace david63\emaillist\controller;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+use david63\emaillist\ext;
+
 /**
 * Admin controller
 */
@@ -221,11 +223,12 @@ class admin_controller implements admin_interface
 		}
 
 		$this->template->assign_vars(array(
-			'S_JAB_ENABLE'	=> $this->config['jab_enable'],
-			'S_SORT_DIR'	=> $s_sort_dir,
-			'S_SORT_KEY'	=> $s_sort_key,
-			'TOTAL_USERS'	=> $this->user->lang('TOTAL_EMAIL_USERS', (int) $user_count),
-			'U_ACTION'		=> $action . "&amp;fce=$fce&amp;fcu=$fcu",
+			'EMAIL_LIST_VERSION'	=> ext::EMAIL_LIST_VERSION,
+			'S_JAB_ENABLE'			=> $this->config['jab_enable'],
+			'S_SORT_DIR'			=> $s_sort_dir,
+			'S_SORT_KEY'			=> $s_sort_key,
+			'TOTAL_USERS'			=> $this->user->lang('TOTAL_EMAIL_USERS', (int) $user_count),
+			'U_ACTION'				=> $action . "&amp;fce=$fce&amp;fcu=$fcu",
 		));
 	}
 
