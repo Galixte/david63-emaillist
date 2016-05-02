@@ -1,0 +1,100 @@
+{% include 'overall_header.html' %}
+
+<a name="maincontent"></a>
+
+<h1>{{ lang('EMAIL_LIST') }}</h1>
+{EMAIL_LIST_VERSION}<br /><br />
+<p>{{ lang('EMAIL_LIST_EXPLAIN') }}</p>
+
+<form id="list" method="post" action="{U_ACTION}">
+
+<div class="pagination">
+	{% if pagination or TOTAL_USERS %}
+   		{TOTAL_USERS}
+		{% if pagination %}
+			&bull; {% include 'pagination.html' %}
+		{% else %}
+			&bull; {PAGE_NUMBER}
+		{% endif %}
+	{% endif %}
+</div>
+
+<br />
+
+<table cellspacing="1">
+<thead>
+	<tr>
+		<th>{{ lang('FILTER_BY') }}</th>
+		<th>{{ lang('SELECT_CHAR') }}</th>
+	</tr>
+</thead>
+
+<tbody>
+	<tr class="row1">
+		<td><strong>{{ lang('FILTER_USERNAME') }}</strong></td>
+		<td>
+			{% for char in first_char_user %}
+				<a href="{char.U_FILTER}">{char.DESC}</a>&nbsp;
+			{% endfor %}
+		</td>
+	</tr>
+
+	<tr class="row2">
+		<td><strong>{{ lang('FILTER_EMAIL') }}</strong></td>
+		<td>
+			{% for char in first_char_email %}
+				<a href="{char.U_FILTER}">{char.DESC}</a>&nbsp;
+			{% endfor %}
+		</td>
+	</tr>
+</tbody>
+
+</table>
+
+<fieldset class="display-options">
+	{{ lang('SORT_BY') }} {{ lang('COLON') }} {S_SORT_KEY} {S_SORT_DIR}
+	<input class="button2" type="submit" value="{{ lang('E_SORT') }}" name="sort" />
+	&nbsp;&bull;&nbsp;
+	<input class="button2" type="submit" value="{{ lang('E_CLEAR_FILTER') }}" name="clear_filters" />
+	&nbsp;&bull;&nbsp;
+	<input class="button2" type="submit" value="{{ lang('E_CSV') }}" name="csv" />
+</fieldset>
+
+<table cellspacing="1">
+<thead>
+<tr>
+	<th>{{ lang('USERNAME') }}</th>
+	<th>{{ lang('EMAIL_ADDRESS') }}</th>
+	{% if S_JAB_ENABLE %}
+		<th>{{ lang('JABBER_ADDRESS') }}</th>
+	{% endif %}
+</tr>
+</thead>
+
+<tbody>
+	{% for elist in emaillist %}
+		{% if emaillist.S_ROW_COUNT is even %}<tr class="row1">{% else %}<tr class="row2">{% endif %}
+			<td>{elist.USERNAME}</td>
+			<td>{elist.EMAIL}</td>
+			{% if S_JAB_ENABLE %}
+				<td>{elist.JABBER}</td>
+			{% endif %}
+		</tr>
+	{% endfor %}
+</tbody>
+
+</table>
+
+<br />
+
+<div class="pagination">
+	{% if pagination %}
+		{% include 'pagination.html' %}
+	{% else %}
+		{PAGE_NUMBER}
+	{% endif %}
+</div>
+
+</form>
+
+{% include 'overall_footer.html' %}
