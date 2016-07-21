@@ -1,10 +1,11 @@
 {% include 'overall_header.html' %}
+{% INCLUDECSS '@david63_emaillist/version.css' %}
 
 <a name="maincontent"></a>
 
 <h1>{{ lang('EMAIL_LIST') }}</h1>
-{EMAIL_LIST_VERSION}<br /><br />
 <p>{{ lang('EMAIL_LIST_EXPLAIN') }}</p>
+<span class="version_name">{{ lang('VERSION') }}{{ lang('COLON') }}</span><span class="version">{EMAIL_LIST_VERSION}</span>
 
 <form id="list" method="post" action="{U_ACTION}">
 
