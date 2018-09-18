@@ -42,11 +42,14 @@ $lang = array_merge($lang, array(
 	'ACP_USER_UTILS'		=> 'Outils utilisateur',
 	'ALL'					=> 'Tous les caractères',
 
+	'E_CLEAR_FILTER'		=> 'Annuler les filtres',
+	'E_CSV'					=> 'Exporter la liste des adresses e-mail au format CSV',
+	'E_SORT'				=> 'Trier',
 	'EMAIL_LIST'			=> 'Liste des adresses e-mails',
-	'EMAIL_LIST_EXPLAIN'	=> 'Sur cette page se trouve la liste des adresses e-mails des membres.',
+	'EMAIL_LIST_EXPLAIN'	=> 'Depuis cette page il est possible de consulter et exporter la liste des adresses e-mails des membres.',
 
 	'FILTER_BY'				=> 'Filter par',
-	'FILTER_EMAIL'			=> 'E-mail',
+	'FILTER_EMAIL'			=> 'Adresse e-mail',
 	'FILTER_USERNAME'		=> 'Nom d’utilisateur',
 
 	'JABBER_ADDRESS'		=> 'Adresse Jabber',
@@ -55,9 +58,14 @@ $lang = array_merge($lang, array(
 
 	'SELECT_CHAR'			=> 'Sélectionner des caractères',
 	'SORT_BY'				=> 'Trier par',
-	'SORT_EMAIL'			=> 'E-mail',
+	'SORT_EMAIL'			=> 'Adresse e-mail',
 	'SORT_JABBER'			=> 'Adresse Jabber',
 	'SORT_USERNAME'			=> 'Nom d’utilisateur',
 
-	'TOTAL_USERS'			=> 'Total des utilisateurs',
+	'TOTAL_EMAIL_USERS'		=> 'Total d’utilisateurs : <strong>%s</strong>',
+
+	// Translators - set these to whatever is most appropriate in your language
+	// These are used to populate the filter keys
+	'START_CHARACTER'		=> 'A',
+	'END_CHARACTER'			=> 'Z',
 ));
